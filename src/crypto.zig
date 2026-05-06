@@ -688,8 +688,8 @@ test "memory safety in OpenSSL integration" {
     {
         // Invalid CBOR test
         const invalid_cbor = "invalidCBORdataNotBase64";
-        const dummy_sig = [_]u8{0} ** 64;
-        const dummy_data = [_]u8{0} ** 32;
+        const dummy_sig: [64]u8 = @splat(0);
+        const dummy_data: [32]u8 = @splat(0);
 
         // This should not crash, but return an error
         const result = verifySignature(allocator, invalid_cbor, &dummy_sig, &dummy_data);

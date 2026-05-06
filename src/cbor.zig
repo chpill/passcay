@@ -478,7 +478,8 @@ test "parseAttestationObject basic functionality" {
     try buffer.appendSlice("authData");
     try buffer.append(0x58); // Byte string with 1-byte length
     try buffer.append(37); // Length 37
-    try buffer.appendSlice(&[_]u8{0} ** 37);
+    const auth_data: [37]u8 = @splat(0);
+    try buffer.appendSlice(&auth_data);
 
     const b64_encoded = try util.encodeBase64Url(testing.allocator, buffer.items);
     defer testing.allocator.free(b64_encoded);
@@ -537,7 +538,7 @@ test "parseCoseKey with EC2/P-256 key" {
 test "parseAuthData basic functionality" {
     const testing = std.testing;
 
-    var auth_data = [_]u8{0} ** 37;
+    var auth_data: [37]u8 = @splat(0);
     testing.io.random(auth_data[0..32]); // RP ID hash
     auth_data[32] = 0x01;
 
@@ -592,7 +593,7 @@ test "encodeAttestationObject basic functionality" {
     const testing = std.testing;
 
     const fmt = "none";
-    const auth_data = [_]u8{0} ** 37;
+    const auth_data: [37]u8 = @splat(0);
     const att_stmt = [_]u8{0xA0}; // Empty map
 
     const encoded = try encodeAttestationObject(testing.allocator, fmt, &auth_data, &att_stmt);
@@ -611,7 +612,7 @@ test "encodeAttestationObject basic functionality" {
 test "parseAuthenticatorData with user verified flag" {
     const testing = std.testing;
 
-    var auth_data = [_]u8{0} ** 37; // Minimum length
+    var auth_data: [37]u8 = @splat(0); // Minimum length
     testing.io.random(auth_data[0..32]);
 
     auth_data[32] = 0x05; // 0x01 | 0x04
